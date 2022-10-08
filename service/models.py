@@ -64,7 +64,7 @@ class Promotion(db.Model):
     )
     description = db.Column(db.String(63), nullable=False)
     promotion_value = db.Column(db.Integer)
-    promotion_percent = db.Column(db.Integer)
+    promotion_percent = db.Column(db.Float)
     status = db.Column(db.Boolean(), nullable=False, default=True)
     expiry = db.Column(db.Date(), nullable=False, default = date.today() + timedelta(days=7))
     created_at = db.Column(db.Date(), nullable=False, default=date.today())
