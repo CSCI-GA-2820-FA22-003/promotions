@@ -16,8 +16,6 @@ DELETE /promotions/{id} - deletes a Promotion record in the database
 from flask import jsonify, request, abort
 from service.models import Promotion
 from .common import status  # HTTP Status Codes
-
-
 # Import Flask application
 from . import app
 
@@ -35,15 +33,34 @@ def healthcheck():
 ######################################################################
 @app.route("/")
 def index():
-    """ Root URL response """
-    app.logger.info("Request for Root URL")
+    """Promotions Root URL response"""
+    app.logger.info("Request for Promotions Root URL")
     return (
         jsonify(
-            name="Promotion Demo REST API Service",
+            name="Promotions Service",
             version="1.0"
         ),
         status.HTTP_200_OK,
     )
+
+######################################################################
+# ADD A NEW PROMOTION
+######################################################################
+@app.route("/promotion", methods=["POST"])
+def create_promotion():
+    """
+    Creates a Promotion
+    This endpoint will create a Promotion based the data in the body that is posted
+    """
+    app.logger.info("Request to create a Promotion")
+    check_content_type("application/json")
+    promotion = Promotion()
+    promotion.deserialize(request.get_json())
+    promotion.create()
+    message = promotion.serialize()
+
+    app.logger.info("Promotion with ID [%s] created.", promotion.id)
+    return jsonify(message), status.HTTP_201_CREATED
 
 ######################################################################
 # UPDATE AN EXISTING PET
@@ -67,7 +84,6 @@ def update_promotions(promotion_id):
 
     app.logger.info("Promotion with ID [%s] updated.", promotion.id)
     return jsonify(promotion.serialize()), status.HTTP_200_OK
-
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

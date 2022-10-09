@@ -9,8 +9,9 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
+from datetime import date
 from service import app
-from service.models import db, init_db, Promotion
+from service.models import Promotion, db
 from service.common import status  # HTTP Status Codes
 from tests.factories import PromotionFactory
 
@@ -19,9 +20,8 @@ DATABASE_URI = os.getenv(
 )
 BASE_URL = "/promotions"
 
-
 ######################################################################
-#  T E S T   P R O M O T I O N  S E R V I C E
+#  P R O M O T I O N   R O U T E S   T E S T   C A S E S
 ######################################################################
 class TestPromotionServer(TestCase):
     """ REST API Server Tests """
@@ -31,10 +31,9 @@ class TestPromotionServer(TestCase):
         """ This runs once before the entire test suite """
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
-        # Set up the test database
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        init_db(app)
+        Promotion.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
@@ -58,7 +57,7 @@ class TestPromotionServer(TestCase):
             test_promotion = PromotionFactory()
             response = self.client.post(BASE_URL, json=test_promotion.serialize())
             self.assertEqual(
-                response.status_code, status.HTTP_201_CREATED, "Could not create test pet"
+                response.status_code, status.HTTP_201_CREATED, "Could not create test promotion"
             )
             new_promotion = response.get_json()
             test_promotion.id = new_promotion["id"]
@@ -74,7 +73,7 @@ class TestPromotionServer(TestCase):
         response = self.client.get("/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
-        self.assertEqual(data["name"], "Promotion Demo REST API Service")
+        self.assertEqual(data["name"], "Promotions Service")
 
     def test_health(self):
         """It should be healthy"""
@@ -83,6 +82,39 @@ class TestPromotionServer(TestCase):
         data = response.get_json()
         self.assertEqual(data["status"], 200)
         self.assertEqual(data["message"], "Healthy")
+
+    def test_create_promotion(self):
+        """It should Create a new Promotion"""
+        test_promotion = PromotionFactory()
+        logging.debug("Test Promotion: %s", test_promotion.serialize())
+        response = self.client.post(BASE_URL, json=test_promotion.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Check the data is correct
+        new_promotion = response.get_json()
+        self.assertEqual(new_promotion["name"], test_promotion.name)
+        self.assertEqual(new_promotion["type"], test_promotion.type.name)
+        self.assertEqual(new_promotion["description"], test_promotion.description)
+        self.assertEqual(new_promotion["promotion_value"], test_promotion.promotion_value)
+        self.assertEqual(new_promotion["promotion_percent"], test_promotion.promotion_percent)
+        self.assertEqual(new_promotion["status"], test_promotion.status)
+        self.assertEqual(date.fromisoformat(new_promotion["expiry"]), test_promotion.expiry)
+        self.assertEqual(date.fromisoformat(new_promotion["created_at"]), test_promotion.created_at)
+        self.assertEqual(date.fromisoformat(new_promotion["last_updated_at"]), test_promotion.last_updated_at)
+
+    def test_create_promotion_with_incorrect_content_type(self):
+        """It should Create a new Promotion"""
+        test_promotion = PromotionFactory()
+        logging.debug("Test Promotion: %s", test_promotion.serialize())
+        response = self.client.post(BASE_URL, data=test_promotion.serialize())
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_create_promotion_with_no_content_type(self):
+        """It should Create a new Promotion"""
+        test_promotion = PromotionFactory()
+        logging.debug("Test Promotion: %s", test_promotion.serialize())
+        response = self.client.post(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_update_promotion(self):
         """It should Update an existing Promotion"""
@@ -99,3 +131,4 @@ class TestPromotionServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_promotion = response.get_json()
         self.assertEqual(updated_promotion["description"], "Updated description")
+        self.assertEqual(updated_promotion["name"], "Promotions Service")
