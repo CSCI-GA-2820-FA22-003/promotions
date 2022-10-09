@@ -22,6 +22,8 @@ from . import app
 ######################################################################
 # GET HEALTH CHECK
 ######################################################################
+
+
 @app.route("/healthcheck")
 def healthcheck():
     """Let them know our heart is still beating"""
@@ -31,6 +33,8 @@ def healthcheck():
 ######################################################################
 # GET INDEX
 ######################################################################
+
+
 @app.route("/")
 def index():
     """Promotions Root URL response"""
@@ -46,11 +50,13 @@ def index():
 ######################################################################
 # ADD A NEW PROMOTION
 ######################################################################
-@app.route("/promotion", methods=["POST"])
+
+
+@app.route("/promotions", methods=["POST"])
 def create_promotion():
     """
     Creates a Promotion
-    This endpoint will create a Promotion based the data in the body that is posted
+    This endpoint will create a Promotion based on the data in the body that is posted
     """
     app.logger.info("Request to create a Promotion")
     check_content_type("application/json")
@@ -65,6 +71,8 @@ def create_promotion():
 ######################################################################
 # UPDATE AN EXISTING PET
 ######################################################################
+
+
 @app.route("/promotions/<int:promotion_id>", methods=["PUT"])
 def update_promotions(promotion_id):
     """
@@ -76,7 +84,8 @@ def update_promotions(promotion_id):
 
     promotion = Promotion.find(promotion_id)
     if not promotion:
-        abort(status.HTTP_404_NOT_FOUND, f"Promotion with id '{promotion_id}' was not found.")
+        abort(status.HTTP_404_NOT_FOUND,
+              f"Promotion with id '{promotion_id}' was not found.")
 
     promotion.deserialize(request.get_json())
     promotion.id = promotion_id
@@ -89,10 +98,12 @@ def update_promotions(promotion_id):
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
+
 def init_db():
     """ Initializes the SQLAlchemy app """
     global app
     Promotion.init_db(app)
+
 
 def check_content_type(content_type):
     """Checks that the media type is correct"""
@@ -106,7 +117,8 @@ def check_content_type(content_type):
     if request.headers["Content-Type"] == content_type:
         return
 
-    app.logger.error("Invalid Content-Type: %s", request.headers["Content-Type"])
+    app.logger.error("Invalid Content-Type: %s",
+                     request.headers["Content-Type"])
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         f"Content-Type must be {content_type}",
