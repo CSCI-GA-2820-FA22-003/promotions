@@ -77,33 +77,13 @@ class TestPromotionServer(TestCase):
         data = response.get_json()
         self.assertEqual(data["name"], "Promotions Service")
 
-    def test_get_promotion(self):
-        """It should Get a single Promotion"""
-        # get the id of a promotion
-        test_promotion = self._create_promotions(1)[0]
-        response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.get_json()
-        self.assertEqual(data["name"], test_promotion.name)
-
-    def test_get_promotion_not_found(self):
-        """It should not Get a Promotion thats not found"""
-        response = self.client.get(f"{BASE_URL}/0")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        data = response.get_json()
-        logging.debug("Response data = %s", data)
-        self.assertIn("was not found", data["message"])
-    
+   
     def test_create_promotion(self):
         """It should Create a new Promotion"""
         test_promotion = PromotionFactory()
         logging.debug("Test Promotion: %s", test_promotion.serialize())
         response = self.client.post(BASE_URL, json=test_promotion.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # Make sure location header is set
-        location = response.headers.get("Location", None)
-        self.assertIsNotNone(location)
 
         # Check the data is correct
         new_promotion = response.get_json()
@@ -116,22 +96,6 @@ class TestPromotionServer(TestCase):
         self.assertEqual(date.fromisoformat(new_promotion["expiry"]), test_promotion.expiry)
         self.assertEqual(date.fromisoformat(new_promotion["created_at"]), test_promotion.created_at)
         self.assertEqual(date.fromisoformat(new_promotion["last_updated_at"]), test_promotion.last_updated_at)
-
-        # Check that the location header was correct
-        response = self.client.get(location)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        new_promotion = response.get_json()
-        self.assertEqual(new_promotion["name"], test_promotion.name)
-        self.assertEqual(new_promotion["type"], test_promotion.type.name)
-        self.assertEqual(new_promotion["description"], test_promotion.description)
-        self.assertEqual(new_promotion["promotion_value"], test_promotion.promotion_value)
-        self.assertEqual(new_promotion["promotion_percent"], test_promotion.promotion_percent)
-        self.assertEqual(new_promotion["status"], test_promotion.status)
-        self.assertEqual(date.fromisoformat(new_promotion["expiry"]), test_promotion.expiry)
-        self.assertEqual(date.fromisoformat(new_promotion["created_at"]), test_promotion.created_at)
-        self.assertEqual(
-            date.fromisoformat(new_promotion["last_updated_at"]), test_promotion.last_updated_at
-            )
 
     def test_create_promotion_with_incorrect_content_type(self):
         """It should Create a new Promotion"""
