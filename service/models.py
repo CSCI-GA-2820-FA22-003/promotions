@@ -30,12 +30,15 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
+
 def init_db(app):
     """Initialize the SQLAlchemy app"""
     Promotion.init_db(app)
 
+
 class DataValidationError(Exception):
     """Used for an data validation errors when deserializing """
+
 
 class PromotionType(Enum):
     """Enumeration of valid Promotion Types"""
@@ -66,9 +69,11 @@ class Promotion(db.Model):
     promotion_value = db.Column(db.Integer)
     promotion_percent = db.Column(db.Float)
     status = db.Column(db.Boolean(), nullable=False, default=True)
-    expiry = db.Column(db.Date(), nullable=False, default = date.today() + timedelta(days=7))
+    expiry = db.Column(db.Date(), nullable=False,
+                       default=date.today() + timedelta(days=7))
     created_at = db.Column(db.Date(), nullable=False, default=date.today())
-    last_updated_at = db.Column(db.Date(), nullable=False, default=date.today())
+    last_updated_at = db.Column(
+        db.Date(), nullable=False, default=date.today())
 
     # Instance Methods
 
@@ -104,7 +109,7 @@ class Promotion(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "type": self.type.name, # convert enum to string
+            "type": self.type.name,  # convert enum to string
             "description": self.description,
             "promotion_value": self.promotion_value,
             "promotion_percent": self.promotion_percent,
@@ -123,7 +128,8 @@ class Promotion(db.Model):
         """
         try:
             self.name = data["name"]
-            self.type = getattr(PromotionType, data["type"])  # create enum from string
+            # create enum from string
+            self.type = getattr(PromotionType, data["type"])
             self.description = data["description"]
             self.promotion_value = data["promotion_value"]
             self.promotion_percent = data["promotion_percent"]
