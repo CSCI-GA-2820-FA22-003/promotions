@@ -10,9 +10,11 @@ import os
 import logging
 from unittest import TestCase
 from datetime import date
+
+# from unittest.mock import MagicMock, patch
 from service import app
-from service.models import Promotion, db
-from service.common import status  # HTTP Status Codes
+from service.common import status
+from service.models import db, init_db, Promotion
 from tests.factories import PromotionFactory
 
 DATABASE_URI = os.getenv(
@@ -26,24 +28,25 @@ BASE_URL = "/promotions"
 
 
 class TestPromotionServer(TestCase):
-    """ REST API Server Tests """
+    """ Promotion REST API Server Tests """
 
     @classmethod
     def setUpClass(cls):
-        """ This runs once before the entire test suite """
+        """Run once before all tests"""
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
+        # Set up the test database
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        Promotion.init_db(app)
+        init_db(app)
 
     @classmethod
     def tearDownClass(cls):
-        """ This runs once after the entire test suite """
+        """Run once after all tests"""
         db.session.close()
 
     def setUp(self):
-        """ This runs before each test """
+        """Runs before each test"""
         self.client = app.test_client()
         db.session.query(Promotion).delete()  # clean up the last tests
         db.session.commit()
@@ -111,6 +114,28 @@ class TestPromotionServer(TestCase):
         self.assertEqual(date.fromisoformat(new_promotion["last_updated_at"]),
                          test_promotion.last_updated_at)
 
+    def test_update_promotion(self):
+        """It should Update an existing Promotion"""
+        # create a promotion to update
+        test_promotion = PromotionFactory()
+        response = self.client.post(BASE_URL, json=test_promotion.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the promotion
+        new_promotion = response.get_json()
+        logging.debug(new_promotion)
+        new_promotion["description"] = "Updated description"
+        response = self.client.put(
+            f"{BASE_URL}/{new_promotion['id']}", json=new_promotion)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_promotion = response.get_json()
+        self.assertEqual(
+            updated_promotion["description"], "Updated description")
+
+    ######################################################################
+    #  T E S T   S A D   P A T H S
+    ######################################################################
+
     def test_create_promotion_no_data(self):
         """It should not Create a Promotion with missing data"""
         response = self.client.post(BASE_URL, json={})
@@ -132,29 +157,12 @@ class TestPromotionServer(TestCase):
         self.assertEqual(response.status_code,
                          status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    def test_update_promotion(self):
-        """It should Update an existing Promotion"""
-        # create a promotion to update
-        test_promotion = PromotionFactory()
-        response = self.client.post(BASE_URL, json=test_promotion.serialize())
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # update the promotion
-        new_promotion = response.get_json()
-        logging.debug(new_promotion)
-        new_promotion["description"] = "Updated description"
-        response = self.client.put(
-            f"{BASE_URL}/{new_promotion['id']}", json=new_promotion)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        updated_promotion = response.get_json()
-        self.assertEqual(
-            updated_promotion["description"], "Updated description")
-
     def test_update_promotion_no_id(self):
-        """It should return a 404 Not Found Error"""
+        """It should return a 404 Not Found Error if the id does not exist on update promotion"""
         # update the promotion with id that is not present in the database
         new_promotion = {'id': 4}
         logging.debug(new_promotion)
         response = self.client.put(
             f"{BASE_URL}/{new_promotion['id']}", json=new_promotion)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        

@@ -22,7 +22,7 @@ DATABASE_URI = os.getenv(
 #  P R O M O T I O N   M O D E L   T E S T   C A S E S
 ######################################################################
 
-
+# pylint: disable=too-many-public-methods
 class TestPromotion(unittest.TestCase):
     """ Test Cases for Promotion Model """
 
@@ -253,7 +253,6 @@ class TestPromotion(unittest.TestCase):
             promotion.create()
         name = promotions[0].name
         found = Promotion.find_by_name(name)
-        self.assertEqual(found.count(), 1)
         self.assertEqual(found[0].name, promotions[0].name)
         self.assertEqual(found[0].type, promotions[0].type)
         self.assertEqual(found[0].description, promotions[0].description)
