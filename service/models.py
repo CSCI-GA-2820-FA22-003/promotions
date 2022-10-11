@@ -21,8 +21,8 @@ last_updated_at (date) - Date when the promotion was last updated
 """
 import logging
 from enum import Enum
-from datetime import date
-from datetime import timedelta
+from datetime import date, timedelta
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger("flask.app")
@@ -49,7 +49,7 @@ class PromotionType(Enum):
     GIFT_CARDS = 4
 
 
-class Promotion(db.Model):
+class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
     """
     Class that represents a Promotion
 
@@ -59,7 +59,6 @@ class Promotion(db.Model):
 
     app = None
 
-    # Table Schema
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63), nullable=False)
     type = db.Column(
@@ -161,8 +160,13 @@ class Promotion(db.Model):
     # Class Methods
 
     @classmethod
-    def init_db(cls, app):
-        """ Initializes the database session """
+    def init_db(cls, app: Flask):
+        """Initializes the database session
+
+        :param app: the Flask app
+        :type data: Flask
+
+        """
         logger.info("Initializing database")
         cls.app = app
         # This is where we initialize SQLAlchemy from the Flask app

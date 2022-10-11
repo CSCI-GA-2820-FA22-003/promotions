@@ -15,7 +15,7 @@ DELETE /promotions/{id} - deletes a Promotion record in the database
 
 from flask import jsonify, request, abort
 from service.models import Promotion
-from .common import status  # HTTP Status Codes
+from service.common import status  # HTTP Status Codes
 # Import Flask application
 from . import app
 
@@ -77,7 +77,7 @@ def create_promotion():
 def update_promotions(promotion_id):
     """
     Update a Promotion
-    This endpoint will update a Promotion based the body that is posted
+    This endpoint will update a Promotion based on the body that is posted
     """
     app.logger.info("Request to update promotion with id: %s", promotion_id)
     check_content_type("application/json")
@@ -95,14 +95,8 @@ def update_promotions(promotion_id):
     return jsonify(promotion.serialize()), status.HTTP_200_OK
 
 ######################################################################
-#  U T I L I T Y   F U N C T I O N S
+#  UTILITY FUNCTIONS
 ######################################################################
-
-
-def init_db():
-    """ Initializes the SQLAlchemy app """
-    global app
-    Promotion.init_db(app)
 
 
 def check_content_type(content_type):
