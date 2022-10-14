@@ -141,8 +141,7 @@ class TestPromotionServer(TestCase):
 
         # make sure this is deleted
         response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
-        # TODO: check after GET (issue 10)
-        #self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
     ######################################################################

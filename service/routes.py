@@ -94,12 +94,12 @@ def update_promotions(promotion_id):
     app.logger.info("Promotion with ID [%s] updated.", promotion.id)
     return jsonify(promotion.serialize()), status.HTTP_200_OK
 
-
 ######################################################################
 # DELETE AN EXISTING PROMOTION
 ######################################################################
 
-@app.route("/promotions/<int:promotion_id>", methods = ["DELETE"])
+
+@app.route("/promotions/<int:promotion_id>", methods=["DELETE"])
 def delete_promotion(promotion_id):
     """
     Delete a Promotion
@@ -113,7 +113,6 @@ def delete_promotion(promotion_id):
 
     app.logger.info("Promotion with ID [%s] delete complete.", promotion_id)
     return "", status.HTTP_204_NO_CONTENT
-
 
 
 ######################################################################
