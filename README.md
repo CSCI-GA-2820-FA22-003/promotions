@@ -1,6 +1,7 @@
 # NYU DevOps Project Template
 
 [![Build Status](https://github.com/nyudevops-promotions/promotions/actions/workflows/ci.yml/badge.svg)](https://github.com/nyudevops-promotions/promotions/actions)
+[![codecov](https://codecov.io/gh/nyudevops-promotions/promotions/branch/main/graph/badge.svg?token=7QW1Z8EFFN)](https://codecov.io/gh/nyudevops-promotions/promotions)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
