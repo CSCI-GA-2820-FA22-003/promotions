@@ -114,6 +114,15 @@ class TestPromotionServer(TestCase):
         self.assertEqual(date.fromisoformat(new_promotion["last_updated_at"]),
                          test_promotion.last_updated_at)
 
+    def test_get_promotion(self):
+        """It should retrieve a Promotion"""
+        # get the id of a promotion
+        test_promotion = self._create_promotions(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["name"], test_promotion.name)
+
     def test_update_promotion(self):
         """It should Update an existing Promotion"""
         # create a promotion to update
@@ -141,7 +150,7 @@ class TestPromotionServer(TestCase):
 
         # make sure this is deleted
         response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
-        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     ######################################################################
     #  T E S T   S A D   P A T H S
@@ -167,6 +176,14 @@ class TestPromotionServer(TestCase):
         response = self.client.post(BASE_URL)
         self.assertEqual(response.status_code,
                          status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_get_promotion_not_found(self):
+        """It should not Get a Promotion thats not found"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
 
     def test_update_promotion_no_id(self):
         """It should return a 404 Not Found Error if the id does not exist on update promotion"""

@@ -77,17 +77,18 @@ def create_promotion():
 @app.route("/promotions/<int:promotion_id>", methods=["GET"])
 def get_promotion(promotion_id):
     """
-    Fetches a single Promotion
-
-    This endpoint will return a Promotion based on it's ID
+    Retrieve a single Promotion
+    This endpoint will return a Promotion based on it's id
     """
-    app.logger.info("Request for Promotions with id: %s", )
+
+    app.logger.info("Request for promotion with id: %s", promotion_id)
     promotion = Promotion.find(promotion_id)
     if not promotion:
         abort(status.HTTP_404_NOT_FOUND, f"Promotion with id '{promotion_id}' was not found.")
 
     app.logger.info("Returning promotion: %s", promotion.name)
     return jsonify(promotion.serialize()), status.HTTP_200_OK
+
 
 ######################################################################
 # UPDATE AN EXISTING PET
