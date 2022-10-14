@@ -165,4 +165,3 @@ class TestPromotionServer(TestCase):
         response = self.client.put(
             f"{BASE_URL}/{new_promotion['id']}", json=new_promotion)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
