@@ -68,6 +68,27 @@ def create_promotion():
     app.logger.info("Promotion with ID [%s] created.", promotion.id)
     return jsonify(message), status.HTTP_201_CREATED
 
+
+######################################################################
+# GET A NEW PROMOTION
+######################################################################
+
+
+@app.route("/promotions/<int:promotion_id>", methods=["GET"])
+def get_promotion(promotion_id):
+    """
+    Fetches a single Promotion
+
+    This endpoint will return a Promotion based on it's ID
+    """
+    app.logger.info("Request for Promotions with id: %s", )
+    promotion = Promotion.find(promotion_id)
+    if not promotion:
+        abort(status.HTTP_404_NOT_FOUND, f"Promotion with id '{promotion_id}' was not found.")
+
+    app.logger.info("Returning promotion: %s", promotion.name)
+    return jsonify(promotion.serialize()), status.HTTP_200_OK
+
 ######################################################################
 # UPDATE AN EXISTING PET
 ######################################################################
