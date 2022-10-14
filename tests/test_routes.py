@@ -132,6 +132,17 @@ class TestPromotionServer(TestCase):
         self.assertEqual(
             updated_promotion["description"], "Updated description")
 
+    def test_delete_promotion(self):
+        """It should Delete a Promotion"""
+        test_promotion = self._create_promotions(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{test_promotion.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
+
+        # make sure this is deleted
+        response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
