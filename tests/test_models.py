@@ -22,6 +22,7 @@ DATABASE_URI = os.getenv(
 #  P R O M O T I O N   M O D E L   T E S T   C A S E S
 ######################################################################
 
+
 # pylint: disable=too-many-public-methods
 class TestPromotion(unittest.TestCase):
     """ Test Cases for Promotion Model """
