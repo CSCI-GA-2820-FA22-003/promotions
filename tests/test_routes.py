@@ -143,7 +143,6 @@ class TestPromotionServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
         # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
     ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
