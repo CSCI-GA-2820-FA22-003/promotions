@@ -47,6 +47,23 @@ def index():
         status.HTTP_200_OK,
     )
 
+
+######################################################################
+# LIST ALL PROMOTIONS
+######################################################################
+
+
+@app.route("/promotions", methods=["GET"])
+def list_promotions():
+    """Returns a list of all of the Promotions"""
+    app.logger.info("Request for promotion list")
+    promotions = Promotion.all()
+
+    results = [promotion.serialize() for promotion in promotions]
+    app.logger.info("Returning %d promotions", len(results))
+    return jsonify(results), status.HTTP_200_OK
+
+
 ######################################################################
 # ADD A NEW PROMOTION
 ######################################################################
@@ -56,7 +73,8 @@ def index():
 def create_promotion():
     """
     Creates a Promotion
-    This endpoint will create a Promotion based on the data in the body that is posted
+    This endpoint will create a Promotion based on the data
+    in the body that is posted
     """
     app.logger.info("Request to create a Promotion")
     check_content_type("application/json")
@@ -78,13 +96,16 @@ def create_promotion():
 def get_promotion(promotion_id):
     """
     Retrieve a single Promotion
-    This endpoint will return a Promotion based on it's id
+    This endpoint will return a Promotion based on its id
     """
 
     app.logger.info("Request for promotion with id: %s", promotion_id)
     promotion = Promotion.find(promotion_id)
     if not promotion:
-        abort(status.HTTP_404_NOT_FOUND, f"Promotion with id '{promotion_id}' was not found.")
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Promotion with id '{promotion_id}' was not found."
+        )
 
     app.logger.info("Returning promotion: %s", promotion.name)
     return jsonify(promotion.serialize()), status.HTTP_200_OK

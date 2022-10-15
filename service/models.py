@@ -9,7 +9,7 @@ Promotion - A Promotion used in the Shopping Cart
 Attributes:
 -----------
 name (string) - the name of the promotion
-type (enumeration) - the type of the promotion like ABS_DISCOUNT, PERCENT_DISCOUNT
+type (enumeration) - the type of the promotion: ABS_DISCOUNT, PERCENT_DISCOUNT
 description (string) - the description of the promotion
 promotion_value (number) - the value of the promotion like 2000 off,
 promotion_percent: the percent of the promotion like 50% off,
@@ -62,7 +62,9 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63), nullable=False)
     type = db.Column(
-        db.Enum(PromotionType), nullable=False, server_default=(PromotionType.ABS_DISCOUNT.name)
+        db.Enum(PromotionType),
+        nullable=False,
+        server_default=(PromotionType.ABS_DISCOUNT.name)
     )
     description = db.Column(db.String(63), nullable=False)
     promotion_value = db.Column(db.Integer)

@@ -123,6 +123,16 @@ class TestPromotionServer(TestCase):
         data = response.get_json()
         self.assertEqual(data["name"], test_promotion.name)
 
+    def test_list_promotions(self):
+        """It should retrieve a list containing all Promotions"""
+        # get 5 promotions
+        test_promotion = self._create_promotions(5)
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        promotions = response.get_json()
+        for i, promotion in enumerate(promotions):
+            self.assertEqual(promotion["name"], test_promotion[i].name)
+
     def test_update_promotion(self):
         """It should Update an existing Promotion"""
         # create a promotion to update
