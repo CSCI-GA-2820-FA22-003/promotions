@@ -5,33 +5,29 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
-This is a skeleton you can use to start your projects
-
 ## Overview
 
-This project template contains starter code for your class project. The `/service` folder contains your `models.py` file for your model and a `routes.py` file for your service. The `/tests` folder has test case starter code for testing the model and the service separately. All you need to do is add your functionality. You can use the [lab-flask-tdd](https://github.com/nyu-devops/lab-flask-tdd) for code examples to copy from.
+This repository contains code for the Promotions service. The promotions resource is a representation of a special promotion or sale that is running against a product or perhaps the entire store. Some examples are "buy 1 get 1 free", "20% off", etc. Discount promotions usually apply for a given duration (e.g., sale for 1 week only). 
 
-## Automatic Setup
+## Setup Promotion Service
 
-The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
+To run the service please follow the steps:
 
-## Manual Setup
+- Git clone the repository on your local
 
-You can also clone this repository and then copy and paste the starter code into your project repo folder on your local computer. Be careful not to copy over your own `README.md` file so be selective in what you copy.
+    `git clone https://github.com/nyudevops-promotions/promotions.git`
 
-There are 4 hidden files that you will need to copy manually if you use the Mac Finder or Windows Explorer to copy files from this folder into your repo folder.
+- Start your service using the following command
 
-These should be copied using a bash shell as follows:
+    `Honcho start`
 
-```bash
-    cp .gitignore  ../<your_repo_folder>/
-    cp .flaskenv ../<your_repo_folder>/
-    cp .gitattributes ../<your_repo_folder>/
-```
+- Use the following command to run any Unit Tests available for the repo
+
+    `nosetests`
 
 ## Contents
 
-The project contains the following:
+The repository is structured in the below manner:
 
 ```text
 .gitignore          - this will ignore vagrant and other metadata files
@@ -57,10 +53,105 @@ tests/              - test cases package
 └── test_routes.py  - test suite for service routes
 ```
 
-## License
+## Promotion APIs
 
-Copyright (c) John Rofrano. All rights reserved.
+The following segment details out the Promotion Service's CRUD APIs with sample URLs, Request Body, and Responses. 
+
+### GET /promotions/[id]
+
+Example: `GET http://localhost:8000/promotions/007`
+
+Response body:
+
+    {
+        "created_at": "2009-01-01",
+        "description": "Test Description",
+        "expiry": "2009-01-03",
+        "id": 007,
+        "last_updated_at": "2009-01-02",
+        "name": "Test Promotion for Get",
+        "promotion_percent": 0.42,
+        "promotion_value": 69,
+        "status": true,
+        "type": "ABS_DISCOUNT"
+    }
+
+
+### POST /promotions
+
+Example: `Create – POST  http://localhost:8000/promotions`
+
+Request body:
+
+    {
+        "name": "Test Promotion for Get",
+        "type": "ABS_DISCOUNT",
+        "description": "Test Description",
+        "promotion_value": 69,
+        "promotion_percent": 0.42,
+        "status": true,
+        "expiry": "2009-01-03",
+        "created_at": "2009-01-01",
+        "last_updated_at": "2009-01-02"
+    }
+
+Response body:
+
+    {
+        "created_at": "2009-01-01",
+        "description": "Test Description",
+        "expiry": "2009-01-03",
+        "id": 007,
+        "last_updated_at": "2009-01-02",
+        "name": "Test Promotion for Get",
+        "promotion_percent": 0.42,
+        "promotion_value": 69,
+        "status": true,
+        "type": "ABS_DISCOUNT"
+    }
+
+
+### PUT /promotions/[id]
+
+Example: `Update – PUT  http://localhost:8000/promotions/007`
+
+Request body:
+
+    {
+        "name": "Test Promotion for Get",
+        "type": "ABS_DISCOUNT",
+        "description": "Test Description - Updating",
+        "promotion_value": 71,
+        "promotion_percent": 0.43,
+        "status": false,
+        "expiry": "2009-01-03",
+        "created_at": "2009-01-01",
+        "last_updated_at": "2009-01-02"
+    }
+
+Response body:
+
+    {
+        "created_at": "2009-01-01",
+        "description": "Test Description - Updating",
+        "expiry": "2009-01-03",
+        "id": 007,
+        "last_updated_at": "2009-01-02",
+        "name": "Test Promotion for Get - 2",
+        "promotion_percent": 0.43,
+        "promotion_value": 71,
+        "status": false,
+        "type": "ABS_DISCOUNT"
+    }
+
+
+### DELETE /promotions/[id]
+
+Example: `DELETE  http://localhost:8000/promotions/007`
+
+
+## License
 
 Licensed under the Apache License. See [LICENSE](LICENSE)
 
-This repository is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** created and taught by *John Rofrano*, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
+This repository is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** taught by *John Rofrano*, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
