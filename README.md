@@ -1,4 +1,4 @@
-# NYU DevOps Project Template
+# NYU DevOps Promotions
 
 [![Build Status](https://github.com/nyudevops-promotions/promotions/actions/workflows/ci.yml/badge.svg)](https://github.com/nyudevops-promotions/promotions/actions)
 [![codecov](https://codecov.io/gh/nyudevops-promotions/promotions/branch/main/graph/badge.svg?token=7QW1Z8EFFN)](https://codecov.io/gh/nyudevops-promotions/promotions)
