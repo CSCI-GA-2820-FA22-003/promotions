@@ -1,4 +1,4 @@
-name: CI Build
+name: TDD CI Build
 on:
   push:
   pull_request:

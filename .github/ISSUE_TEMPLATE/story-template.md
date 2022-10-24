@@ -1,5 +1,5 @@
 ---
-name: Story template
+name: Story Template
 about: Template to be followed while writing new stories.
 title: Story
 labels: ''

@@ -15,7 +15,7 @@ To run the service please follow the steps:
 
 - Git clone the repository on your local
 
-    `git clone https://github.com/nyudevops-promotions/promotions.git`
+    `git clone https://github.com/CSCI-GA-2820-FA22-003/promotions.git`
 
 - Start your service using the following command
 
