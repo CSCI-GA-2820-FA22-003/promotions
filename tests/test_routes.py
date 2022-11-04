@@ -109,10 +109,6 @@ class TestPromotionServer(TestCase):
         self.assertEqual(new_promotion["status"], test_promotion.status)
         self.assertEqual(date.fromisoformat(
             new_promotion["expiry"]), test_promotion.expiry)
-        self.assertEqual(date.fromisoformat(
-            new_promotion["created_at"]), test_promotion.created_at)
-        self.assertEqual(date.fromisoformat(new_promotion["last_updated_at"]),
-                         test_promotion.last_updated_at)
 
     def test_get_promotion(self):
         """It should retrieve a Promotion"""
