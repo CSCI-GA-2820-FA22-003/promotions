@@ -11,11 +11,11 @@ Attributes:
 name (string) - the name of the promotion
 type (enumeration) - the type of the promotion: ABS_DISCOUNT, PERCENT_DISCOUNT
 description (string) - the description of the promotion
-promotion_value (number) - the value of the promotion like 2000 off,
-promotion_percent: the percent of the promotion like 50% off,
-status (boolean) - True for active promotions,
-expiry (date) - Date when the promotion expires,
-created_at (date) - Date when the promotion was created,
+promotion_value (number) - the value of the promotion like 2000 off
+promotion_percent: the percent of the promotion like 50% off
+status (boolean) - True for active promotions
+expiry (date) - Date when the promotion expires
+created_at (date) - Date when the promotion was created
 last_updated_at (date) - Date when the promotion was last updated
 
 """
@@ -95,6 +95,7 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
         Updates a Promotion to the database
         """
         logger.info("Saving %s", self.name)
+        self.last_updated_at = date.today()
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
         db.session.commit()
@@ -115,9 +116,7 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
             "promotion_value": self.promotion_value,
             "promotion_percent": self.promotion_percent,
             "status": self.status,
-            "expiry": self.expiry.isoformat(),
-            "created_at": self.created_at.isoformat(),
-            "last_updated_at": self.last_updated_at.isoformat()
+            "expiry": self.expiry.isoformat()
         }
 
     def deserialize(self, data):
@@ -142,8 +141,6 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
                     + str(type(data["status"]))
                 )
             self.expiry = date.fromisoformat(data["expiry"])
-            self.created_at = date.fromisoformat(data["created_at"])
-            self.last_updated_at = date.fromisoformat(data["last_updated_at"])
         except AttributeError as error:
             raise DataValidationError(
                 "Invalid attribute: " + error.args[0]

@@ -174,12 +174,6 @@ class TestPromotion(unittest.TestCase):
         self.assertEqual(data["status"], promotion.status)
         self.assertIn("expiry", data)
         self.assertEqual(date.fromisoformat(data["expiry"]), promotion.expiry)
-        self.assertIn("created_at", data)
-        self.assertEqual(date.fromisoformat(
-            data["created_at"]), promotion.created_at)
-        self.assertIn("last_updated_at", data)
-        self.assertEqual(date.fromisoformat(
-            data["last_updated_at"]), promotion.last_updated_at)
 
     def test_deserialize_a_promotion(self):
         """It should de-serialize a Promotion"""
@@ -196,10 +190,6 @@ class TestPromotion(unittest.TestCase):
                          data["promotion_percent"])
         self.assertEqual(promotion.status, data["status"])
         self.assertEqual(promotion.expiry, date.fromisoformat(data["expiry"]))
-        self.assertEqual(promotion.created_at,
-                         date.fromisoformat(data["created_at"]))
-        self.assertEqual(promotion.last_updated_at,
-                         date.fromisoformat(data["last_updated_at"]))
 
     def test_deserialize_missing_data(self):
         """It should not deserialize a Promotion with missing data"""
@@ -231,14 +221,14 @@ class TestPromotion(unittest.TestCase):
         self.assertRaises(DataValidationError, promotion.deserialize, data)
 
     def test_find_promotion(self):
-        """It should Find a Pet by ID"""
+        """It should Find a Promotion by ID"""
         promotions = PromotionFactory.create_batch(5)
         for promotion in promotions:
             promotion.create()
         logging.debug(promotions)
         # Make sure they got saved
         self.assertEqual(len(Promotion.all()), 5)
-        # Find the 2nd pet in the list
+        # Find the 2nd promotion in the list
         promotion = Promotion.find(promotions[1].id)
         self.assertIsNot(promotion, None)
         self.assertEqual(promotion.id, promotions[1].id)
