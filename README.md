@@ -64,11 +64,9 @@ Example: `GET http://localhost:8000/promotions/007`
 Response body:
 
     {
-        "created_at": "2009-01-01",
         "description": "Test Description",
         "expiry": "2009-01-03",
         "id": 007,
-        "last_updated_at": "2009-01-02",
         "name": "Test Promotion for Get",
         "promotion_percent": 0.42,
         "promotion_value": 69,
@@ -91,18 +89,14 @@ Request body:
         "promotion_percent": 0.42,
         "status": true,
         "expiry": "2009-01-03",
-        "created_at": "2009-01-01",
-        "last_updated_at": "2009-01-02"
     }
 
 Response body:
 
     {
-        "created_at": "2009-01-01",
         "description": "Test Description",
         "expiry": "2009-01-03",
         "id": 007,
-        "last_updated_at": "2009-01-02",
         "name": "Test Promotion for Get",
         "promotion_percent": 0.42,
         "promotion_value": 69,
@@ -125,18 +119,14 @@ Request body:
         "promotion_percent": 0.43,
         "status": false,
         "expiry": "2009-01-03",
-        "created_at": "2009-01-01",
-        "last_updated_at": "2009-01-02"
     }
 
 Response body:
 
     {
-        "created_at": "2009-01-01",
         "description": "Test Description - Updating",
         "expiry": "2009-01-03",
         "id": 007,
-        "last_updated_at": "2009-01-02",
         "name": "Test Promotion for Get - 2",
         "promotion_percent": 0.43,
         "promotion_value": 71,

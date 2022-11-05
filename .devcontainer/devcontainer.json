@@ -1,16 +1,15 @@
 {
-	"name": "Python 3 & PostgeSQL",
+	"name": "IBM Cloud",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/app",
-	"remoteUser": "devops",
+	"remoteUser": "vscode",
 	"extensions": [
 		"VisualStudioExptTeam.vscodeintellicode",
 		"ms-python.python",
 		"ms-python.pylint",
 		"ms-python.vscode-pylance",
 		"alexkrechik.cucumberautocomplete",
-		"cstrap.flask-snippets",
 		"yzhang.markdown-all-in-one",
 		"bierner.github-markdown-preview",
 		"hnw.vscode-auto-open-markdown-preview",
@@ -21,10 +20,19 @@
 		"LittleFoxTeam.vscode-python-test-adapter",
 		"njpwerner.autodocstring",
 		"redhat.vscode-yaml",
-		"streetsidesoftware.code-spell-checker",
-		"wholroyd.jinja",
+    	"wholroyd.jinja",
+		"ms-azuretools.vscode-docker",
+		"inercia.vscode-k3d",
 		"bbenoist.vagrant",
-		"cschleiden.vscode-github-actions"
+		"streetsidesoftware.code-spell-checker"
 	],
-	"postCreateCommand": "sudo pip install -r requirements.txt"
+    "postCreateCommand": "sudo pip install -r requirements.txt",
+	"features": {
+		"docker-in-docker": "latest",
+		"kubectl-helm-minikube": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		}
+	}
 }
