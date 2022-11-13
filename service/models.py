@@ -194,3 +194,13 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+
+    @classmethod
+    def find_by_status(cls, status):
+        """Returns all Promotions with the given status
+
+        Args:
+            status (boolean): the status of the Promotion(s) we want to match
+        """
+        logger.info("Processing status query for %s ...", status)
+        return cls.query.filter(cls.status == status)

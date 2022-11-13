@@ -249,3 +249,15 @@ class TestPromotion(unittest.TestCase):
         self.assertEqual(found[0].description, promotions[0].description)
         self.assertEqual(found[0].status, promotions[0].status)
         self.assertEqual(found[0].expiry, promotions[0].expiry)
+
+    def test_find_by_status(self):
+        """It should Find Promotions by Status"""
+        promotions = PromotionFactory.create_batch(10)
+        for promotion in promotions:
+            promotion.create()
+        status = promotions[0].status
+        count = len([promotion for promotion in promotions if promotion.status == status])
+        found = Promotion.find_by_status(status)
+        self.assertEqual(found.count(), count)
+        for promotion in found:
+            self.assertEqual(promotion.status, status)
