@@ -150,18 +150,34 @@ class TestPromotionServer(TestCase):
     def test_query_promotion_list_by_status(self):
         """It should Query Promotions by Status"""
         promotions = self._create_promotions(10)
-        test_status = promotions[0].status
-        status_promotions = [promotion for promotion in promotions if promotion.status == test_status]
+        available_promotions = [promotion for promotion in promotions if promotion.status is True]
+        unavailable_promotions = [promotion for promotion in promotions if promotion.status is False]
+        available_count = len(available_promotions)
+        unavailable_count = len(unavailable_promotions)
+        logging.debug("Available Promotions [%d] %s", available_count, available_promotions)
+        logging.debug("Unavailable Promotions [%d] %s", unavailable_count, unavailable_promotions)
+
+        # test for available
         response = self.client.get(
-            BASE_URL,
-            query_string=f"status={test_status}"
+            BASE_URL, query_string="status=true"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
-        self.assertEqual(len(data), len(status_promotions))
+        self.assertEqual(len(data), available_count)
         # check the data just to be sure
         for promotion in data:
-            self.assertEqual(promotion["status"], test_status)
+            self.assertEqual(promotion["status"], True)
+
+        # test for unavailable
+        response = self.client.get(
+            BASE_URL, query_string="status=false"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), unavailable_count)
+        # check the data just to be sure
+        for promotion in data:
+            self.assertEqual(promotion["status"], False)
 
     def test_delete_promotion(self):
         """It should Delete a Promotion"""
