@@ -147,6 +147,22 @@ class TestPromotionServer(TestCase):
         self.assertEqual(
             updated_promotion["description"], "Updated description")
 
+    def test_query_promotion_list_by_status(self):
+        """It should Query Promotions by Status"""
+        promotions = self._create_promotions(10)
+        test_status = promotions[0].status
+        status_promotions = [promotion for promotion in promotions if promotion.status == test_status]
+        response = self.client.get(
+            BASE_URL,
+            query_string=f"status={test_status}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), len(status_promotions))
+        # check the data just to be sure
+        for promotion in data:
+            self.assertEqual(promotion["status"], test_status)
+
     def test_delete_promotion(self):
         """It should Delete a Promotion"""
         test_promotion = self._create_promotions(1)[0]

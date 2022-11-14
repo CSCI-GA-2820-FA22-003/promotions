@@ -57,7 +57,13 @@ def index():
 def list_promotions():
     """Returns a list of all of the Promotions"""
     app.logger.info("Request for promotion list")
-    promotions = Promotion.all()
+
+    promotions = []
+    status_type = request.args.get("status")
+    if status_type:
+        promotions = Promotion.find_by_status(status_type)
+    else:
+        promotions = Promotion.all()
 
     results = [promotion.serialize() for promotion in promotions]
     app.logger.info("Returning %d promotions", len(results))
