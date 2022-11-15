@@ -198,7 +198,7 @@ class TestPromotionServer(TestCase):
         new_promotion = response.get_json()
         logging.debug(new_promotion)
         self.assertEqual(new_promotion["status"], True)
-    
+
     def test_deactivate_promotion(self):
         """It should deactivate a Promotion"""
         test_promotion = self._create_promotions(1)[0]
@@ -250,20 +250,14 @@ class TestPromotionServer(TestCase):
             f"{BASE_URL}/{new_promotion['id']}", json=new_promotion)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_activate_promotion_not_found(self):
-        """It should return a 404 Not Found Error if the id does not exist on activate promotion"""
+    def test_activate_deactivate_promotion_not_found(self):
+        """It should return a 404 Not Found Error if the id does not exist on activate or deactivate promotion"""
         # update the promotion with id that is not present in the database
         new_promotion = {'id': 4}
         logging.debug(new_promotion)
         response = self.client.put(
             f"{BASE_URL}/{new_promotion['id']}/activate")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_deactivate_promotion_not_found(self):
-        """It should return a 404 Not Found Error if the id does not exist on activate promotion"""
-        # update the promotion with id that is not present in the database
-        new_promotion = {'id': 4}
-        logging.debug(new_promotion)
-        response = self.client.put(
-            f"{BASE_URL}/{new_promotion['id']}/deactivate")
+        response = self.client.delete(
+            f"{BASE_URL}/{new_promotion['id']}/activate")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

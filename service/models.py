@@ -111,7 +111,7 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
         logger.info("Activating %s", self.name)
         self.status = True
         db.session.commit()
-    
+
     def deactivate(self):
         """ Deactivates a Promotion from the data store """
         logger.info("Deactivating %s", self.name)

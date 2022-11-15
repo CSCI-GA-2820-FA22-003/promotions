@@ -186,9 +186,8 @@ def activate_deactivate_promotion(promotion_id):
             promotion.deactivate()
             app.logger.info("Promotion with ID [%s] deactivation complete.", promotion_id)
         return jsonify(promotion.serialize()), status.HTTP_200_OK
-    else:
-        app.logger.info("Promotion with ID [%s] not found for activation.", promotion_id)
-        return "", status.HTTP_404_NOT_FOUND
+    app.logger.info("Promotion with ID [%s] not found for activation.", promotion_id)
+    return "", status.HTTP_404_NOT_FOUND
 
 ######################################################################
 #  UTILITY FUNCTIONS
