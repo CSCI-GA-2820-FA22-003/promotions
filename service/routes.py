@@ -13,7 +13,7 @@ PUT /promotions/{id} - updates a Promotion record in the database
 DELETE /promotions/{id} - deletes a Promotion record in the database
 """
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, url_for
 from service.models import Promotion
 from service.common import status  # HTTP Status Codes
 # Import Flask application
@@ -91,7 +91,7 @@ def create_promotion():
     location_url = url_for("get_promotion", promotion_id=promotion.id, _external=True)
 
     app.logger.info("Promotion with ID [%s] created.", promotion.id)
-    return jsonify(message), status.HTTP_201_CREATED
+    return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
 ######################################################################
