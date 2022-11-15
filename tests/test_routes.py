@@ -94,6 +94,8 @@ class TestPromotionServer(TestCase):
         test_promotion = PromotionFactory()
         logging.debug("Test Promotion create: %s", test_promotion.serialize())
         response = self.client.post(BASE_URL, json=test_promotion.serialize())
+        location = response.headers.get("Location", None)
+        self.assertIsNotNone(location)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Check the data is correct
