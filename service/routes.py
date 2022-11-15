@@ -88,6 +88,7 @@ def create_promotion():
     promotion.deserialize(request.get_json())
     promotion.create()
     message = promotion.serialize()
+    location_url = url_for("get_promotion", promotion_id=promotion.id, _external=True)
 
     app.logger.info("Promotion with ID [%s] created.", promotion.id)
     return jsonify(message), status.HTTP_201_CREATED
