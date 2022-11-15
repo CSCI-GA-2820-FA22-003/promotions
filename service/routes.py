@@ -119,7 +119,7 @@ def get_promotion(promotion_id):
 
 
 ######################################################################
-# UPDATE AN EXISTING PET
+# UPDATE AN EXISTING PROMOTION
 ######################################################################
 
 
@@ -164,6 +164,31 @@ def delete_promotion(promotion_id):
     app.logger.info("Promotion with ID [%s] delete complete.", promotion_id)
     return "", status.HTTP_204_NO_CONTENT
 
+
+######################################################################
+# ACTIVATE OR DEACTIVATE AN EXISTING PROMOTION
+######################################################################
+
+
+@app.route("/promotions/<int:promotion_id>/activate", methods=["PUT", "DELETE"])
+def activate_deactivate_promotion(promotion_id):
+    """
+    Activate or Deactivate a Promotion
+    This endpoint will Activate or Deactivate a Promotion based the id specified in the path
+    """
+
+    app.logger.info("Request to Activate a promotion with id: %s", promotion_id)
+    promotion = Promotion.find(promotion_id)
+    if promotion:
+        if request.method == "PUT":
+            promotion.activate()
+            app.logger.info("Promotion with ID [%s] activation complete.", promotion_id)
+        else:
+            promotion.deactivate()
+            app.logger.info("Promotion with ID [%s] deactivation complete.", promotion_id)
+        return jsonify(promotion.serialize()), status.HTTP_200_OK
+    app.logger.info("Promotion with ID [%s] not found for activation.", promotion_id)
+    return "", status.HTTP_404_NOT_FOUND
 
 ######################################################################
 #  UTILITY FUNCTIONS

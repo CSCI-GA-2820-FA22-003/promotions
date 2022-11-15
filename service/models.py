@@ -106,6 +106,18 @@ class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes
         db.session.delete(self)
         db.session.commit()
 
+    def activate(self):
+        """ Activates a Promotion from the data store """
+        logger.info("Activating %s", self.name)
+        self.status = True
+        db.session.commit()
+
+    def deactivate(self):
+        """ Deactivates a Promotion from the data store """
+        logger.info("Deactivating %s", self.name)
+        self.status = False
+        db.session.commit()
+
     def serialize(self) -> dict:
         """ Serializes a Promotion into a dictionary """
         return {
