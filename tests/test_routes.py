@@ -202,7 +202,7 @@ class TestPromotionServer(TestCase):
     def test_deactivate_promotion(self):
         """It should deactivate a Promotion"""
         test_promotion = self._create_promotions(1)[0]
-        response = self.client.put(f"{BASE_URL}/{test_promotion.id}/deactivate")
+        response = self.client.delete(f"{BASE_URL}/{test_promotion.id}/activate")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_promotion = response.get_json()
         logging.debug(new_promotion)

@@ -165,49 +165,30 @@ def delete_promotion(promotion_id):
 
 
 ######################################################################
-# ACTIVATE AN EXISTING PROMOTION
+# ACTIVATE OR DEACTIVATE AN EXISTING PROMOTION
 ######################################################################
 
 
-@app.route("/promotions/<int:promotion_id>/activate", methods=["PUT"])
-def activate_promotion(promotion_id):
+@app.route("/promotions/<int:promotion_id>/activate", methods=["PUT", "DELETE"])
+def activate_deactivate_promotion(promotion_id):
     """
-    Activate a Promotion
-    This endpoint will Activate a Promotion based the id specified in the path
+    Activate or Deactivate a Promotion
+    This endpoint will Activate or Deactivate a Promotion based the id specified in the path
     """
 
     app.logger.info("Request to Activate a promotion with id: %s", promotion_id)
     promotion = Promotion.find(promotion_id)
     if promotion:
-        promotion.activate()
-        app.logger.info("Promotion with ID [%s] activation complete.", promotion_id)
+        if request.method == "PUT":
+            promotion.activate()
+            app.logger.info("Promotion with ID [%s] activation complete.", promotion_id)
+        else:
+            promotion.deactivate()
+            app.logger.info("Promotion with ID [%s] deactivation complete.", promotion_id)
         return jsonify(promotion.serialize()), status.HTTP_200_OK
     else:
         app.logger.info("Promotion with ID [%s] not found for activation.", promotion_id)
         return "", status.HTTP_404_NOT_FOUND
-
-######################################################################
-# DEACTIVATE AN EXISTING PROMOTION
-######################################################################
-
-
-@app.route("/promotions/<int:promotion_id>/deactivate", methods=["PUT"])
-def deactivate_promotion(promotion_id):
-    """
-    Deactivate a Promotion
-    This endpoint will deactivate a Promotion based the id specified in the path
-    """
-
-    app.logger.info("Request to deactivate a promotion with id: %s", promotion_id)
-    promotion = Promotion.find(promotion_id)
-    if promotion:
-        promotion.deactivate()
-        app.logger.info("Promotion with ID [%s] deactivation complete.", promotion_id)
-        return jsonify(promotion.serialize()), status.HTTP_200_OK
-    else:
-        app.logger.info("Promotion with ID [%s] not found for deactivation.", promotion_id)
-        return "", status.HTTP_404_NOT_FOUND
-
 
 ######################################################################
 #  UTILITY FUNCTIONS
