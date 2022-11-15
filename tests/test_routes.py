@@ -190,24 +190,6 @@ class TestPromotionServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{test_promotion.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_activate_promotion(self):
-        """It should Activate a Promotion"""
-        test_promotion = self._create_promotions(1)[0]
-        response = self.client.put(f"{BASE_URL}/{test_promotion.id}/activate")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        new_promotion = response.get_json()
-        logging.debug(new_promotion)
-        self.assertEqual(new_promotion["status"], True)
-    
-    def test_deactivate_promotion(self):
-        """It should deactivate a Promotion"""
-        test_promotion = self._create_promotions(1)[0]
-        response = self.client.put(f"{BASE_URL}/{test_promotion.id}/deactivate")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        new_promotion = response.get_json()
-        logging.debug(new_promotion)
-        self.assertEqual(new_promotion["status"], False)
-
     ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
@@ -248,22 +230,4 @@ class TestPromotionServer(TestCase):
         logging.debug(new_promotion)
         response = self.client.put(
             f"{BASE_URL}/{new_promotion['id']}", json=new_promotion)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_activate_promotion_not_found(self):
-        """It should return a 404 Not Found Error if the id does not exist on activate promotion"""
-        # update the promotion with id that is not present in the database
-        new_promotion = {'id': 4}
-        logging.debug(new_promotion)
-        response = self.client.put(
-            f"{BASE_URL}/{new_promotion['id']}/activate")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_deactivate_promotion_not_found(self):
-        """It should return a 404 Not Found Error if the id does not exist on activate promotion"""
-        # update the promotion with id that is not present in the database
-        new_promotion = {'id': 4}
-        logging.debug(new_promotion)
-        response = self.client.put(
-            f"{BASE_URL}/{new_promotion['id']}/deactivate")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
