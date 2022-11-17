@@ -78,8 +78,7 @@ class TestPromotionServer(TestCase):
         """ It should call the home page """
         response = self.client.get("/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.get_json()
-        self.assertEqual(data["name"], "Promotions Service")
+        self.assertIn(b"Promotions Demo RESTful Service", response.data)
 
     def test_health(self):
         """It should be healthy"""
