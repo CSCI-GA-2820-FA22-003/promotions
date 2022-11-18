@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: rofrano/pipeline-selenium:latest
-
+    needs: tdd
     services:
       postgres:
         image: postgres
