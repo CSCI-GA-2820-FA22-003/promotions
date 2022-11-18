@@ -14,9 +14,9 @@ $(function () {
         $("#promotion_percent").val(res.promotion_percent);
         $("#promotion_status").val(res.status);
         if (res.status == true) {
-            $("#promotion_available").val("true");
+            $("#promotion_status").val("true");
         } else {
-            $("#promotion_available").val("false");
+            $("#promotion_status").val("false");
         }
         $("#promotion_expiry").val(res.expiry);
     }
@@ -192,6 +192,33 @@ $(function () {
         $("#promotion_id").val("");
         $("#flash_message").empty();
         clear_form_data()
+    });
+
+    // ****************************************
+    // Activate a Promotion
+    // ****************************************
+
+    $("#activate-btn").click(function () {
+
+        let promotion_id = $("#promotion_id").val();
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "PUT",
+            url: `/promotions/${promotion_id}/activate`,
+            contentType: "application/json",
+            data: '',
+        })
+
+        ajax.done(function(res){
+            clear_form_data()
+            flash_message("Promotion has been Activated!")
+        });
+
+        ajax.fail(function(res){
+            flash_message("Server error!")
+        });
     });
 
     // ****************************************
