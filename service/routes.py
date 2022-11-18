@@ -37,15 +37,8 @@ def healthcheck():
 
 @app.route("/")
 def index():
-    """Promotions Root URL response"""
-    app.logger.info("Request for Promotions Root URL")
-    return (
-        jsonify(
-            name="Promotions Service",
-            version="1.0"
-        ),
-        status.HTTP_200_OK,
-    )
+    """Base URL for our service"""
+    return app.send_static_file("index.html")
 
 
 ######################################################################
