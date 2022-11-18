@@ -1,6 +1,7 @@
 # NYU DevOps Promotions
 
 [![Build Status](https://github.com/CSCI-GA-2820-FA22-003/promotions/actions/workflows/tdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA22-003/promotions/actions)
+[![Build Status](https://github.com/CSCI-GA-2820-FA22-003/promotions/actions/workflows/bdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA22-003/promotions/actions)
 [![codecov](https://codecov.io/gh/CSCI-GA-2820-FA22-003/promotions/branch/main/graph/badge.svg?token=7QW1Z8EFFN)](https://codecov.io/gh/CSCI-GA-2820-FA22-003/promotions)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
