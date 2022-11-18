@@ -1,5 +1,11 @@
 name: TDD Tests
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - 'README.md'
+    - '.vscode/**'
   pull_request:
     branches:
       - main
