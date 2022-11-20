@@ -42,3 +42,30 @@ Scenario: Create a Promotion
     And I should see "0" in the "Percent" field
     And I should see "False" in the "Status" dropdown
     And I should see "2022-06-16" in the "Expiry" field
+
+Scenario: Get a Promotion
+    When I visit the "Home Page"
+    And I set the "Name" to "Promotion 6"
+    And I set the "Description" to "Description 6"
+    And I select "ABS_DISCOUNT" in the "Type" dropdown
+    And I set the "Value" to "70"
+    And I set the "Percent" to "0"
+    And I select "True" in the "Status" dropdown
+    And I set the "Expiry" to "06-16-2022"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    And the "Description" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Promotion 6" in the "Name" field
+    And I should see "Description 6" in the "Description" field
+    And I should see "ABS_DISCOUNT" in the "Type" dropdown
+    And I should see "70" in the "Value" field
+    And I should see "0" in the "Percent" field
+    And I should see "True" in the "Status" dropdown
+    And I should see "2022-06-16" in the "Expiry" field

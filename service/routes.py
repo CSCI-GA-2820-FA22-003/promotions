@@ -19,6 +19,7 @@ from service.common import status  # HTTP Status Codes
 # Import Flask application
 from . import app
 
+
 ######################################################################
 # GET HEALTH CHECK
 ######################################################################
@@ -137,6 +138,7 @@ def update_promotions(promotion_id):
     app.logger.info("Promotion with ID [%s] updated.", promotion.id)
     return jsonify(promotion.serialize()), status.HTTP_200_OK
 
+
 ######################################################################
 # DELETE AN EXISTING PROMOTION
 ######################################################################
@@ -182,6 +184,7 @@ def activate_deactivate_promotion(promotion_id):
         return jsonify(promotion.serialize()), status.HTTP_200_OK
     app.logger.info("Promotion with ID [%s] not found for activation.", promotion_id)
     return "", status.HTTP_404_NOT_FOUND
+
 
 ######################################################################
 #  UTILITY FUNCTIONS

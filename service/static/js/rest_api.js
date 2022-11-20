@@ -222,17 +222,14 @@ $(function () {
     });
 
     // ****************************************
-    // Search for a Promotion
+    // Query a Promotion
     // ****************************************
 
     $("#search-btn").click(function () {
         let status = $("#promotion_status").val() == "true";
-
         let queryString = ""
 
-        if (status) {
-            queryString += 'status=' + status
-        }
+        queryString += 'status=' + status
 
         $("#flash_message").empty();
 
@@ -244,7 +241,58 @@ $(function () {
         })
 
         ajax.done(function(res){
-            //alert(res.toSource())
+            $("#search_results").empty();
+            let table = '<table class="table table-striped" cellpadding="10">'
+            table += '<thead><tr>'
+            table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-2">Name</th>'
+            table += '<th class="col-md-2">Description</th>'
+            table += '<th class="col-md-2">Type</th>'
+            table += '<th class="col-md-2">Value</th>'
+            table += '<th class="col-md-2">Percent</th>'
+            table += '<th class="col-md-2">Status</th>'
+            table += '<th class="col-md-2">Expiry</th>'
+            table += '</tr></thead><tbody>'
+            let firstPromotion = "";
+            for(let i = 0; i < res.length; i++) {
+                let promotion = res[i];
+                table +=  `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.description}</td><td>${promotion.type}</td><td>${promotion.promotion_value}</td><td>${promotion.promotion_percent}</td><td>${promotion.status}</td><td>${promotion.expiry}</td></tr>`;
+                if (i == 0) {
+                    firstPromotion = promotion;
+                }
+            }
+            table += '</tbody></table>';
+            $("#search_results").append(table);
+
+            // copy the first result to the form
+            if (firstPromotion != "") {
+                update_form_data(firstPromotion)
+            }
+
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
+    // ****************************************
+    // List All Promotions
+    // ****************************************
+
+    $("#searchall-btn").click(function () {
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "GET",
+            url: `/promotions`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
