@@ -69,3 +69,23 @@ Scenario: Get a Promotion
     And I should see "0" in the "Percent" field
     And I should see "True" in the "Status" dropdown
     And I should see "2022-06-16" in the "Expiry" field
+
+Scenario: Activate a Promotion
+    When I visit the "Home Page"
+    And I select "False" in the "Status" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Promotion 3" in the "Name" field
+    And I should see "False" in the "Status" dropdown
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Activate" button
+    Then I should see the message "Promotion has been Activated!"
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Promotion 3" in the "Name" field
+    And I should see "Description 3" in the "Description" field
+    And I should see "True" in the "Status" dropdown
+
