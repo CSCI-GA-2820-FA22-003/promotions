@@ -70,6 +70,14 @@ Scenario: Get a Promotion
     And I should see "True" in the "Status" dropdown
     And I should see "2022-06-16" in the "Expiry" field
 
+Scenario: List all Promotions
+    When I visit the "Home Page"
+    And I press the "Searchall" button
+    Then I should see the message "Success"
+    And I should see "Promotion 1" in the results
+    And I should see "Promotion 2" in the results
+    And I should not see "Promotion 5" in the results
+
 Scenario: Activate a Promotion
     When I visit the "Home Page"
     And I select "False" in the "Status" dropdown
