@@ -97,3 +97,12 @@ Scenario: Activate a Promotion
     And I should see "Description 3" in the "Description" field
     And I should see "True" in the "Status" dropdown
 
+Scenario: Query a promotion using its status
+    When I visit the "Home Page"
+    And I select "True" in the "Status" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Promotion 1" in the results
+    And I should see "Promotion 2" in the results
+    And I should see "Promotion 4" in the results
+    And I should not see "Promotion 3" in the results
