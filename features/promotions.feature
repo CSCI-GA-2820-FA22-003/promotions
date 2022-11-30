@@ -106,7 +106,7 @@ Scenario: Query a promotion using its status
     And I should see "Promotion 2" in the results
     And I should see "Promotion 4" in the results
     And I should not see "Promotion 3" in the results
-
+    And I should not see "Promotion three" in the results
 
 Scenario: Delete a promotion using its Id
     When I visit the "Home Page"
@@ -120,7 +120,8 @@ Scenario: Delete a promotion using its Id
     Then I should see the message "Promotion has been Deleted!"
     When I press the "Clear" button
     And I press the "Searchall" button
-    Then I should not see "Promotion 1" in the results
+    Then I should see the message "Success"
+    And I should not see "Promotion 1" in the results
 
 Scenario: Update a Promotion
     When I visit the "Home Page"
