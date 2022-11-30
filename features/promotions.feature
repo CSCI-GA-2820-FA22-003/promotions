@@ -106,3 +106,19 @@ Scenario: Query a promotion using its status
     And I should see "Promotion 2" in the results
     And I should see "Promotion 4" in the results
     And I should not see "Promotion 3" in the results
+
+
+Scenario: Delete a promotion using its Id
+    When I visit the "Home Page"
+    And I set the "Name" to "Promotion 1"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Description 1" in the "Description" field
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Delete" button
+    Then I should see the message "Promotion has been Deleted!"
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should not see "Promotion 1" in the results
