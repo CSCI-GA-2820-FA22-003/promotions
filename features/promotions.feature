@@ -110,8 +110,7 @@ Scenario: Query a promotion using its status
 
 Scenario: Delete a promotion using its Id
     When I visit the "Home Page"
-    And I set the "Name" to "Promotion 1"
-    And I press the "Search" button
+    And I press the "Searchall" button
     Then I should see the message "Success"
     And I should see "Description 1" in the "Description" field
     When I copy the "Id" field
