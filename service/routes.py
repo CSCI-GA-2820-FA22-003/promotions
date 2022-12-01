@@ -6,18 +6,22 @@ or sale that is running against a product or perhaps the entire store
 
 Paths:
 ------
-GET /promotions - Returns a list all of the Promotions
-GET /promotions/{id} - Returns the Promotion with a given id number
-POST /promotions - creates a new Promotion record in the database
-PUT /promotions/{id} - updates a Promotion record in the database
-DELETE /promotions/{id} - deletes a Promotion record in the database
+GET /api/promotions - Returns a list all of the Promotions
+GET /api/promotions?status=true - Returns a list of Promotions with active status
+GET /api/promotions/{id} - Returns the Promotion with a given id number
+POST /api/promotions - Creates a new Promotion record in the database
+PUT /api/promotions/{id} - Updates a Promotion record in the database
+DELETE /api/promotions/{id} - Deletes a Promotion record in the database
+PUT /api/promotions/activate/{id} - Activates a Promotion
+DELETE /api/promotions/activate/{id} - Deactivates a Promotion
 """
 
-from flask import jsonify, request, abort, url_for
-from service.models import Promotion
+from flask import jsonify, request, url_for
+from flask_restx import fields, reqparse, inputs
+from service.models import Promotion, PromotionType
 from service.common import status  # HTTP Status Codes
 # Import Flask application
-from . import app
+from . import app, api
 
 
 ######################################################################
@@ -43,11 +47,46 @@ def index():
 
 
 ######################################################################
+# Define the model so that the docs reflect what can be sent
+######################################################################
+
+
+create_model = api.model('Promotion', {
+    'name': fields.String(required=True,
+                          description='The name of the Promotion'),
+    'type': fields.String(enum=PromotionType._member_names_, description='The type of the Promotion'),  # pylint: disable=W0212
+    'description': fields.String(required=True,
+                                 description='The description of the Promotion'),
+    'promotion_value': fields.Integer(required=True,
+                                      description='The value of the discount Promotion'),
+    'promotion_percent': fields.Float(required=True,
+                                      description='The percentage of the Promotion'),
+    'status': fields.Boolean(required=True,
+                             description='Is the Promotion active or not'),
+    'expiry': fields.Date(required=True, description='The expiry date of the Promotion')
+})
+
+promotion_model = api.inherit(
+    'PromotionModel',
+    create_model,
+    {
+        'id': fields.String(readOnly=True,
+                            description='The unique id assigned internally by service'),
+    }
+)
+
+# query string arguments
+promotion_args = reqparse.RequestParser()
+promotion_args.add_argument(
+    'status', type=inputs.boolean, required=False, help='List Promotions by status')
+
+
+######################################################################
 # LIST ALL PROMOTIONS
 ######################################################################
 
 
-@app.route("/promotions", methods=["GET"])
+@app.route("/api/promotions", methods=["GET"])
 def list_promotions():
     """Returns a list of all of the Promotions"""
     app.logger.info("Request for promotion list")
@@ -69,7 +108,7 @@ def list_promotions():
 ######################################################################
 
 
-@app.route("/promotions", methods=["POST"])
+@app.route("/api/promotions", methods=["POST"])
 def create_promotion():
     """
     Creates a Promotion
@@ -82,7 +121,8 @@ def create_promotion():
     promotion.deserialize(request.get_json())
     promotion.create()
     message = promotion.serialize()
-    location_url = url_for("get_promotion", promotion_id=promotion.id, _external=True)
+    location_url = url_for(
+        "get_promotion", promotion_id=promotion.id, _external=True)
 
     app.logger.info("Promotion with ID [%s] created.", promotion.id)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
@@ -93,7 +133,7 @@ def create_promotion():
 ######################################################################
 
 
-@app.route("/promotions/<int:promotion_id>", methods=["GET"])
+@app.route("/api/promotions/<int:promotion_id>", methods=["GET"])
 def get_promotion(promotion_id):
     """
     Retrieve a single Promotion
@@ -117,7 +157,7 @@ def get_promotion(promotion_id):
 ######################################################################
 
 
-@app.route("/promotions/<int:promotion_id>", methods=["PUT"])
+@app.route("/api/promotions/<int:promotion_id>", methods=["PUT"])
 def update_promotions(promotion_id):
     """
     Update a Promotion
@@ -144,7 +184,7 @@ def update_promotions(promotion_id):
 ######################################################################
 
 
-@app.route("/promotions/<int:promotion_id>", methods=["DELETE"])
+@app.route("/api/promotions/<int:promotion_id>", methods=["DELETE"])
 def delete_promotion(promotion_id):
     """
     Delete a Promotion
@@ -165,30 +205,40 @@ def delete_promotion(promotion_id):
 ######################################################################
 
 
-@app.route("/promotions/<int:promotion_id>/activate", methods=["PUT", "DELETE"])
+@app.route("/api/promotions/<int:promotion_id>/activate", methods=["PUT", "DELETE"])
 def activate_deactivate_promotion(promotion_id):
     """
     Activate or Deactivate a Promotion
     This endpoint will Activate or Deactivate a Promotion based the id specified in the path
     """
 
-    app.logger.info("Request to Activate a promotion with id: %s", promotion_id)
+    app.logger.info(
+        "Request to Activate a promotion with id: %s", promotion_id)
     promotion = Promotion.find(promotion_id)
     if promotion:
         if request.method == "PUT":
             promotion.activate()
-            app.logger.info("Promotion with ID [%s] activation complete.", promotion_id)
+            app.logger.info(
+                "Promotion with ID [%s] activation complete.", promotion_id)
         else:
             promotion.deactivate()
-            app.logger.info("Promotion with ID [%s] deactivation complete.", promotion_id)
+            app.logger.info(
+                "Promotion with ID [%s] deactivation complete.", promotion_id)
         return jsonify(promotion.serialize()), status.HTTP_200_OK
-    app.logger.info("Promotion with ID [%s] not found for activation.", promotion_id)
+    app.logger.info(
+        "Promotion with ID [%s] not found for activation.", promotion_id)
     return "", status.HTTP_404_NOT_FOUND
 
 
 ######################################################################
 #  UTILITY FUNCTIONS
 ######################################################################
+
+
+def abort(error_code: int, message: str):
+    """Logs errors before aborting"""
+    app.logger.error(message)
+    api.abort(error_code, message)
 
 
 def check_content_type(content_type):

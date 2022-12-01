@@ -24,7 +24,8 @@
 		"ms-azuretools.vscode-docker",
 		"inercia.vscode-k3d",
 		"bbenoist.vagrant",
-		"streetsidesoftware.code-spell-checker"
+		"streetsidesoftware.code-spell-checker",
+		"eamodio.gitlens"
 	],
     "postCreateCommand": "sudo pip install -r requirements.txt",
 	"features": {

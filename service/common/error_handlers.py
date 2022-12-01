@@ -15,11 +15,13 @@
 ######################################################################
 
 """
-Module: error_handlers
+Error handlers
+
+Handles all of the HTTP Error Codes returning JSON messages
 """
 from flask import jsonify
-from service.models import DataValidationError
-from service import app
+from service import app, api
+from service.models import DataValidationError, DatabaseConnectionError
 from . import status
 
 
@@ -62,61 +64,30 @@ def not_found(error):
     )
 
 
-@app.errorhandler(status.HTTP_405_METHOD_NOT_ALLOWED)
-def method_not_supported(error):
-    """Handles unsupported HTTP methods with 405_METHOD_NOT_SUPPORTED"""
+######################################################################
+# Special Error Handlers
+######################################################################
+
+
+# @api.errorhandler(DataValidationError)
+# def request_validation_error(error):
+#     """ Handles Value Errors from bad data """
+#     message = str(error)
+#     app.logger.error(message)
+#     return {
+#         'status_code': status.HTTP_400_BAD_REQUEST,
+#         'error': 'Bad Request',
+#         'message': message
+#     }, status.HTTP_400_BAD_REQUEST
+
+
+@api.errorhandler(DatabaseConnectionError)
+def database_connection_error(error):
+    """ Handles Database Errors from connection attempts """
     message = str(error)
-    app.logger.warning(message)
-    return (
-        jsonify(
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
-            error="Method not Allowed",
-            message=message,
-        ),
-        status.HTTP_405_METHOD_NOT_ALLOWED,
-    )
-
-
-@app.errorhandler(status.HTTP_409_CONFLICT)
-def resource_conflict(error):
-    """Handles resource conflicts with HTTP_409_CONFLICT"""
-    message = str(error)
-    app.logger.warning(message)
-    return (
-        jsonify(
-            status=status.HTTP_409_CONFLICT,
-            error="Conflict",
-            message=message,
-        ),
-        status.HTTP_409_CONFLICT,
-    )
-
-
-@app.errorhandler(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-def mediatype_not_supported(error):
-    """Handles unsupported media requests with 415_UNSUPPORTED_MEDIA_TYPE"""
-    message = str(error)
-    app.logger.warning(message)
-    return (
-        jsonify(
-            status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            error="Unsupported media type",
-            message=message,
-        ),
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-    )
-
-
-@app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Handles unexpected server error with 500_SERVER_ERROR"""
-    message = str(error)
-    app.logger.error(message)
-    return (
-        jsonify(
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            error="Internal Server Error",
-            message=message,
-        ),
-        status.HTTP_500_INTERNAL_SERVER_ERROR,
-    )
+    app.logger.critical(message)
+    return {
+        'status_code': status.HTTP_503_SERVICE_UNAVAILABLE,
+        'error': 'Service Unavailable',
+        'message': message
+    }, status.HTTP_503_SERVICE_UNAVAILABLE
