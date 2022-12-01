@@ -19,8 +19,7 @@ class PromotionFactory(factory.Factory):
     id = factory.Sequence(lambda n: n)
     name = factory.Faker("first_name")
     type = FuzzyChoice(choices=[PromotionType.ABS_DISCOUNT,
-                                PromotionType.PERCENT_DISCOUNT,
-                                PromotionType.DELIVERY_DISCOUNT, PromotionType.GIFT_CARDS])
+                                PromotionType.PERCENT_DISCOUNT])
     description = factory.Faker("first_name")
     promotion_value = FuzzyInteger(1, 2000)
     promotion_percent = FuzzyInteger(1, 75)

@@ -36,8 +36,12 @@ def init_db(app):
     Promotion.init_db(app)
 
 
+class DatabaseConnectionError(Exception):
+    """Custom Exception when database connection fails"""
+
+
 class DataValidationError(Exception):
-    """Used for an data validation errors when deserializing """
+    """Custom Exception with data validation fails"""
 
 
 class PromotionType(Enum):
@@ -45,8 +49,7 @@ class PromotionType(Enum):
 
     ABS_DISCOUNT = 0
     PERCENT_DISCOUNT = 1
-    DELIVERY_DISCOUNT = 3
-    GIFT_CARDS = 4
+    UNKNOWN = 2
 
 
 class Promotion(db.Model):  # pylint: disable=too-many-instance-attributes

@@ -20,7 +20,7 @@ from tests.factories import PromotionFactory
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL = "/promotions"
+BASE_URL = "/api/promotions"
 
 ######################################################################
 #  P R O M O T I O N   R O U T E S   T E S T   C A S E S
@@ -151,12 +151,16 @@ class TestPromotionServer(TestCase):
     def test_query_promotion_list_by_status(self):
         """It should Query Promotions by Status"""
         promotions = self._create_promotions(10)
-        available_promotions = [promotion for promotion in promotions if promotion.status is True]
-        unavailable_promotions = [promotion for promotion in promotions if promotion.status is False]
+        available_promotions = [
+            promotion for promotion in promotions if promotion.status is True]
+        unavailable_promotions = [
+            promotion for promotion in promotions if promotion.status is False]
         available_count = len(available_promotions)
         unavailable_count = len(unavailable_promotions)
-        logging.debug("Available Promotions [%d] %s", available_count, available_promotions)
-        logging.debug("Unavailable Promotions [%d] %s", unavailable_count, unavailable_promotions)
+        logging.debug(
+            "Available Promotions [%d] %s", available_count, available_promotions)
+        logging.debug(
+            "Unavailable Promotions [%d] %s", unavailable_count, unavailable_promotions)
 
         # test for available
         response = self.client.get(
@@ -203,7 +207,8 @@ class TestPromotionServer(TestCase):
     def test_deactivate_promotion(self):
         """It should deactivate a Promotion"""
         test_promotion = self._create_promotions(1)[0]
-        response = self.client.delete(f"{BASE_URL}/{test_promotion.id}/activate")
+        response = self.client.delete(
+            f"{BASE_URL}/{test_promotion.id}/activate")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_promotion = response.get_json()
         logging.debug(new_promotion)

@@ -243,7 +243,8 @@ class TestPromotion(unittest.TestCase):
         for promotion in promotions:
             promotion.create()
         status = promotions[0].status
-        count = len([promotion for promotion in promotions if promotion.status == status])
+        count = len(
+            [promotion for promotion in promotions if promotion.status == status])
         found = Promotion.find_by_status(status)
         self.assertEqual(found.count(), count)
         for promotion in found:

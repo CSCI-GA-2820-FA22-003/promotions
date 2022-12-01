@@ -63,20 +63,20 @@ $(function () {
         };
 
         $("#flash_message").empty();
-        
+
         let ajax = $.ajax({
             type: "POST",
-            url: "/promotions",
+            url: "/api/promotions",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             update_form_data(res)
             flash_message("Success")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             flash_message(res.responseJSON.message)
         });
     });
@@ -110,18 +110,18 @@ $(function () {
         $("#flash_message").empty();
 
         let ajax = $.ajax({
-                type: "PUT",
-                url: `/promotions/${promotion_id}`,
-                contentType: "application/json",
-                data: JSON.stringify(data)
-            })
+            type: "PUT",
+            url: `/api/promotions/${promotion_id}`,
+            contentType: "application/json",
+            data: JSON.stringify(data)
+        })
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             update_form_data(res)
             flash_message("Success")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             flash_message(res.responseJSON.message)
         });
 
@@ -139,18 +139,18 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/promotions/${promotion_id}`,
+            url: `/api/promotions/${promotion_id}`,
             contentType: "application/json",
             data: ''
         })
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             //alert(res.toSource())
             update_form_data(res)
             flash_message("Success")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             clear_form_data()
             flash_message(res.responseJSON.message)
         });
@@ -169,17 +169,17 @@ $(function () {
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/promotions/${promotion_id}`,
+            url: `/api/promotions/${promotion_id}`,
             contentType: "application/json",
             data: '',
         })
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             clear_form_data()
             flash_message("Promotion has been Deleted!")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             flash_message("Server error!")
         });
     });
@@ -206,17 +206,17 @@ $(function () {
 
         let ajax = $.ajax({
             type: "PUT",
-            url: `/promotions/${promotion_id}/activate`,
+            url: `/api/promotions/${promotion_id}/activate`,
             contentType: "application/json",
             data: '',
         })
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             clear_form_data()
             flash_message("Promotion has been Activated!")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             flash_message("Server error!")
         });
     });
@@ -235,12 +235,12 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/promotions?${queryString}`,
+            url: `/api/promotions?${queryString}`,
             contentType: "application/json",
             data: ''
         })
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
@@ -254,9 +254,9 @@ $(function () {
             table += '<th class="col-md-2">Expiry</th>'
             table += '</tr></thead><tbody>'
             let firstPromotion = "";
-            for(let i = 0; i < res.length; i++) {
+            for (let i = 0; i < res.length; i++) {
                 let promotion = res[i];
-                table +=  `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.description}</td><td>${promotion.type}</td><td>${promotion.promotion_value}</td><td>${promotion.promotion_percent}</td><td>${promotion.status}</td><td>${promotion.expiry}</td></tr>`;
+                table += `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.description}</td><td>${promotion.type}</td><td>${promotion.promotion_value}</td><td>${promotion.promotion_percent}</td><td>${promotion.status}</td><td>${promotion.expiry}</td></tr>`;
                 if (i == 0) {
                     firstPromotion = promotion;
                 }
@@ -272,7 +272,7 @@ $(function () {
             flash_message("Success")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             flash_message(res.responseJSON.message)
         });
 
@@ -287,12 +287,12 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/promotions`,
+            url: `/api/promotions`,
             contentType: "application/json",
             data: ''
         })
 
-        ajax.done(function(res){
+        ajax.done(function (res) {
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
@@ -306,9 +306,9 @@ $(function () {
             table += '<th class="col-md-2">Expiry</th>'
             table += '</tr></thead><tbody>'
             let firstPromotion = "";
-            for(let i = 0; i < res.length; i++) {
+            for (let i = 0; i < res.length; i++) {
                 let promotion = res[i];
-                table +=  `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.description}</td><td>${promotion.type}</td><td>${promotion.promotion_value}</td><td>${promotion.promotion_percent}</td><td>${promotion.status}</td><td>${promotion.expiry}</td></tr>`;
+                table += `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.description}</td><td>${promotion.type}</td><td>${promotion.promotion_value}</td><td>${promotion.promotion_percent}</td><td>${promotion.status}</td><td>${promotion.expiry}</td></tr>`;
                 if (i == 0) {
                     firstPromotion = promotion;
                 }
@@ -324,7 +324,7 @@ $(function () {
             flash_message("Success")
         });
 
-        ajax.fail(function(res){
+        ajax.fail(function (res) {
             flash_message(res.responseJSON.message)
         });
 
