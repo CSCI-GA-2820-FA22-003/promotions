@@ -19,7 +19,6 @@ Error handlers
 
 Handles all of the HTTP Error Codes returning JSON messages
 """
-from flask import jsonify
 from service import app, api
 from service.models import DataValidationError, DatabaseConnectionError
 from . import status
@@ -27,26 +26,6 @@ from . import status
 
 ######################################################################
 # Error Handlers
-######################################################################
-
-
-@app.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Handles resources not found with 404_NOT_FOUND"""
-    message = str(error)
-    app.logger.warning(message)
-    return (
-        jsonify(
-            status=status.HTTP_404_NOT_FOUND,
-            error="Not Found",
-            message=message
-        ),
-        status.HTTP_404_NOT_FOUND,
-    )
-
-
-######################################################################
-# Special Error Handlers
 ######################################################################
 
 
