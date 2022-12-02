@@ -98,6 +98,21 @@ class PromotionResource(Resource):
     # ------------------------------------------------------------------
     # RETRIEVE A PROMOTION
     # ------------------------------------------------------------------
+    @api.doc('get_promotions')
+    @api.response(404, 'Promotion not found')
+    @api.marshal_with(promotion_model)
+    def get(self, promotion_id):
+        """
+        Retrieve a single Promotion
+        This endpoint will return a Promotion based on its id
+        """
+        app.logger.info("Request for promotion with id: %s", promotion_id)
+        promotion = Promotion.find(promotion_id)
+        if not promotion:
+            abort(status.HTTP_404_NOT_FOUND,
+                  f"Promotion with id '{promotion_id}' was not found.")
+        app.logger.info("Returning promotion: %s", promotion.name)
+        return promotion.serialize(), status.HTTP_200_OK
 
     # ------------------------------------------------------------------
     # UPDATE AN EXISTING PROMOTION
@@ -201,30 +216,6 @@ def list_promotions():
     results = [promotion.serialize() for promotion in promotions]
     app.logger.info("Returning %d promotions", len(results))
     return jsonify(results), status.HTTP_200_OK
-
-
-######################################################################
-# GET A NEW PROMOTION
-######################################################################
-
-
-@app.route("/api/promotions/<int:promotion_id>", methods=["GET"])
-def get_promotion(promotion_id):
-    """
-    Retrieve a single Promotion
-    This endpoint will return a Promotion based on its id
-    """
-
-    app.logger.info("Request for promotion with id: %s", promotion_id)
-    promotion = Promotion.find(promotion_id)
-    if not promotion:
-        abort(
-            status.HTTP_404_NOT_FOUND,
-            f"Promotion with id '{promotion_id}' was not found."
-        )
-
-    app.logger.info("Returning promotion: %s", promotion.name)
-    return jsonify(promotion.serialize()), status.HTTP_200_OK
 
 
 ######################################################################
