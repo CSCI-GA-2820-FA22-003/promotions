@@ -102,6 +102,27 @@ class PromotionResource(Resource):
     # ------------------------------------------------------------------
     # UPDATE AN EXISTING PROMOTION
     # ------------------------------------------------------------------
+    @api.doc('update_promotions')
+    @api.response(400, 'The posted Promotion data was not valid')
+    @api.response(404, 'Promotion not found')
+    @api.expect(promotion_model)
+    @api.marshal_with(promotion_model)
+    def put(self, promotion_id):
+        """
+        Update a Promotion
+        This endpoint will update a Promotion based on the body that is posted
+        """
+        app.logger.info(
+            "Request to update promotion with id: %s", promotion_id)
+        promotion = Promotion.find(promotion_id)
+        if not promotion:
+            abort(status.HTTP_404_NOT_FOUND,
+                  f"Promotion with id '{promotion_id}' was not found.")
+        app.logger.debug('Payload = %s', api.payload)
+        promotion.deserialize(request.get_json())
+        promotion.id = promotion_id
+        promotion.update()
+        return promotion.serialize(), status.HTTP_200_OK
 
     # ------------------------------------------------------------------
     # DELETE A PROMOTION
@@ -207,33 +228,6 @@ def get_promotion(promotion_id):
 
 
 ######################################################################
-# UPDATE AN EXISTING PROMOTION
-######################################################################
-
-
-@app.route("/api/promotions/<int:promotion_id>", methods=["PUT"])
-def update_promotions(promotion_id):
-    """
-    Update a Promotion
-    This endpoint will update a Promotion based on the body that is posted
-    """
-    app.logger.info("Request to update promotion with id: %s", promotion_id)
-    check_content_type("application/json")
-
-    promotion = Promotion.find(promotion_id)
-    if not promotion:
-        abort(status.HTTP_404_NOT_FOUND,
-              f"Promotion with id '{promotion_id}' was not found.")
-
-    promotion.deserialize(request.get_json())
-    promotion.id = promotion_id
-    promotion.update()
-
-    app.logger.info("Promotion with ID [%s] updated.", promotion.id)
-    return jsonify(promotion.serialize()), status.HTTP_200_OK
-
-
-######################################################################
 # DELETE AN EXISTING PROMOTION
 ######################################################################
 
@@ -293,23 +287,3 @@ def abort(error_code: int, message: str):
     """Logs errors before aborting"""
     app.logger.error(message)
     api.abort(error_code, message)
-
-
-def check_content_type(content_type):
-    """Checks that the media type is correct"""
-    if "Content-Type" not in request.headers:
-        app.logger.error("No Content-Type specified.")
-        abort(
-            status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            f"Content-Type must be {content_type}",
-        )
-
-    if request.headers["Content-Type"] == content_type:
-        return
-
-    app.logger.error("Invalid Content-Type: %s",
-                     request.headers["Content-Type"])
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        f"Content-Type must be {content_type}",
-    )
