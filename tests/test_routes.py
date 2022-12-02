@@ -229,7 +229,7 @@ class TestPromotionServer(TestCase):
         logging.debug("Test Promotion: %s", test_promotion.serialize())
         response = self.client.post(BASE_URL, data=test_promotion.serialize())
         self.assertEqual(response.status_code,
-                         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+                         status.HTTP_400_BAD_REQUEST)
 
     def test_create_promotion_with_no_content_type(self):
         """It should not Create a Promotion with no content type"""
@@ -237,7 +237,7 @@ class TestPromotionServer(TestCase):
         logging.debug("Test Promotion: %s", test_promotion.serialize())
         response = self.client.post(BASE_URL)
         self.assertEqual(response.status_code,
-                         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+                         status.HTTP_400_BAD_REQUEST)
 
     def test_get_promotion_not_found(self):
         """It should not Get a Promotion thats not found"""

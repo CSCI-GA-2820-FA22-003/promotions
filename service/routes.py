@@ -16,8 +16,8 @@ PUT /api/promotions/activate/{id} - Activates a Promotion
 DELETE /api/promotions/activate/{id} - Deactivates a Promotion
 """
 
-from flask import jsonify, request, url_for
-from flask_restx import fields, reqparse, inputs
+from flask import jsonify, request
+from flask_restx import Resource, fields, reqparse, inputs
 from service.models import Promotion, PromotionType
 from service.common import status  # HTTP Status Codes
 # Import Flask application
@@ -82,6 +82,85 @@ promotion_args.add_argument(
 
 
 ######################################################################
+#  PATH: /promotions/{id}
+######################################################################
+@api.route('/promotions/<promotion_id>')
+@api.param('promotion_id', 'The Promotion identifier')
+class PromotionResource(Resource):
+    """
+    PromotionResource class
+    Allows the manipulation of a single Promotion
+    GET /promotion{id} - Returns a Promotion with the id
+    PUT /promotion{id} - Update a Promotion with the id
+    DELETE /promotion{id} -  Deletes a Promotion with the id
+    """
+
+    # ------------------------------------------------------------------
+    # RETRIEVE A PROMOTION
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # UPDATE AN EXISTING PROMOTION
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # DELETE A PROMOTION
+    # ------------------------------------------------------------------
+
+
+######################################################################
+#  PATH: /promotions
+######################################################################
+@api.route('/promotions', strict_slashes=False)
+class PromotionCollection(Resource):
+    """ Handles all interactions with collections of Promotions """
+
+    # ------------------------------------------------------------------
+    # LIST ALL PROMOTIONS
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # ADD A NEW PROMOTION
+    # ------------------------------------------------------------------
+    @api.doc('create_promotions')
+    @api.response(400, 'The posted data was not valid')
+    @api.expect(create_model)
+    @api.marshal_with(promotion_model, code=201)
+    def post(self):
+        """
+        Creates a Promotion
+        This endpoint will create a Promotion based on the data
+        in the body that is posted
+        """
+        app.logger.info("Request to create a Promotion")
+        promotion = Promotion()
+        app.logger.debug('Payload = %s', api.payload)
+        promotion.deserialize(api.payload)
+        promotion.create()
+        app.logger.info('Promotion with new id [%s] created!', promotion.id)
+        location_url = api.url_for(
+            PromotionResource, promotion_id=promotion.id, _external=True)
+        return promotion.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
+
+
+######################################################################
+#  PATH: /promotions/{id}/activate
+######################################################################
+@api.route('/promotions/<promotion_id>/activate')
+@api.param('promotion_id', 'The Promotion identifier')
+class ActivateResource(Resource):
+    """ Activate actions on Promotions """
+
+    # ------------------------------------------------------------------
+    # ACTIVATE A PROMOTION
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # DEACTIVATE A PROMOTION
+    # ------------------------------------------------------------------
+
+
+######################################################################
 # LIST ALL PROMOTIONS
 ######################################################################
 
@@ -101,31 +180,6 @@ def list_promotions():
     results = [promotion.serialize() for promotion in promotions]
     app.logger.info("Returning %d promotions", len(results))
     return jsonify(results), status.HTTP_200_OK
-
-
-######################################################################
-# ADD A NEW PROMOTION
-######################################################################
-
-
-@app.route("/api/promotions", methods=["POST"])
-def create_promotion():
-    """
-    Creates a Promotion
-    This endpoint will create a Promotion based on the data
-    in the body that is posted
-    """
-    app.logger.info("Request to create a Promotion")
-    check_content_type("application/json")
-    promotion = Promotion()
-    promotion.deserialize(request.get_json())
-    promotion.create()
-    message = promotion.serialize()
-    location_url = url_for(
-        "get_promotion", promotion_id=promotion.id, _external=True)
-
-    app.logger.info("Promotion with ID [%s] created.", promotion.id)
-    return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
 ######################################################################
