@@ -233,7 +233,6 @@ def list_promotions():
     return jsonify(results), status.HTTP_200_OK
 
 
-
 ######################################################################
 # ACTIVATE OR DEACTIVATE AN EXISTING PROMOTION
 ######################################################################
