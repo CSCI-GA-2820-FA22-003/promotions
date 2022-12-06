@@ -156,7 +156,6 @@ class PromotionResource(Resource):
             promotion.delete()
             app.logger.info(
                 "Promotion with ID [%s] delete complete.", promotion_id)
-        
         return '', status.HTTP_204_NO_CONTENT
 
 
