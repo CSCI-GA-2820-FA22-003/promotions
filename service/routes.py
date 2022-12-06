@@ -142,6 +142,21 @@ class PromotionResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A PROMOTION
     # ------------------------------------------------------------------
+    @api.doc('delete_promotions')
+    @api.response(204, 'Promotion deleted')
+    def delete(self, promotion_id):
+        """
+        Delete a Promotion
+        This endpoint will delete a Promotion based the id specified in the path
+        """
+        app.logger.info(
+            "Request to delete a promotion with id: %s", promotion_id)
+        promotion = Promotion.find(promotion_id)
+        if promotion:
+            promotion.delete()
+            app.logger.info(
+                "Promotion with ID [%s] delete complete.", promotion_id)
+        return '', status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
@@ -216,27 +231,6 @@ def list_promotions():
     results = [promotion.serialize() for promotion in promotions]
     app.logger.info("Returning %d promotions", len(results))
     return jsonify(results), status.HTTP_200_OK
-
-
-######################################################################
-# DELETE AN EXISTING PROMOTION
-######################################################################
-
-
-@app.route("/api/promotions/<int:promotion_id>", methods=["DELETE"])
-def delete_promotion(promotion_id):
-    """
-    Delete a Promotion
-    This endpoint will delete a Promotion based the id specified in the path
-    """
-
-    app.logger.info("Request to delete a promotion with id: %s", promotion_id)
-    promotion = Promotion.find(promotion_id)
-    if promotion:
-        promotion.delete()
-
-    app.logger.info("Promotion with ID [%s] delete complete.", promotion_id)
-    return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
