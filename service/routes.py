@@ -169,6 +169,24 @@ class PromotionCollection(Resource):
     # ------------------------------------------------------------------
     # LIST ALL PROMOTIONS
     # ------------------------------------------------------------------
+    @api.doc('list_promotions')
+    @api.expect(promotion_args, validate=True)
+    @api.marshal_list_with(promotion_model)
+    def get(self):
+        """Returns a list of all of the Promotions"""
+        app.logger.info("Request for promotion list")
+        promotions = []
+        status_type = request.args.get("status")
+        if status_type:
+            app.logger.info('Filtering by status: %s', status_type)
+            promotions = Promotion.find_by_status(status_type)
+        else:
+            app.logger.info('Returning unfiltered list.')
+            promotions = Promotion.all()
+
+        results = [promotion.serialize() for promotion in promotions]
+        app.logger.info('[%s] Promotions returned', len(results))
+        return results, status.HTTP_200_OK
 
     # ------------------------------------------------------------------
     # ADD A NEW PROMOTION
@@ -209,28 +227,6 @@ class ActivateResource(Resource):
     # ------------------------------------------------------------------
     # DEACTIVATE A PROMOTION
     # ------------------------------------------------------------------
-
-
-######################################################################
-# LIST ALL PROMOTIONS
-######################################################################
-
-
-@app.route("/api/promotions", methods=["GET"])
-def list_promotions():
-    """Returns a list of all of the Promotions"""
-    app.logger.info("Request for promotion list")
-
-    promotions = []
-    status_type = request.args.get("status")
-    if status_type:
-        promotions = Promotion.find_by_status(status_type)
-    else:
-        promotions = Promotion.all()
-
-    results = [promotion.serialize() for promotion in promotions]
-    app.logger.info("Returning %d promotions", len(results))
-    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################
