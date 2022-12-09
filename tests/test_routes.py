@@ -204,15 +204,15 @@ class TestPromotionServer(TestCase):
         logging.debug(new_promotion)
         self.assertEqual(new_promotion["status"], True)
 
-    def test_deactivate_promotion(self):
-        """It should deactivate a Promotion"""
-        test_promotion = self._create_promotions(1)[0]
-        response = self.client.delete(
-            f"{BASE_URL}/{test_promotion.id}/activate")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        new_promotion = response.get_json()
-        logging.debug(new_promotion)
-        self.assertEqual(new_promotion["status"], False)
+    # def test_deactivate_promotion(self):
+    #     """It should deactivate a Promotion"""
+    #     test_promotion = self._create_promotions(1)[0]
+    #     response = self.client.delete(
+    #         f"{BASE_URL}/{test_promotion.id}/activate")
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     new_promotion = response.get_json()
+    #     logging.debug(new_promotion)
+    #     self.assertEqual(new_promotion["status"], False)
 
     ######################################################################
     #  T E S T   S A D   P A T H S
@@ -264,6 +264,6 @@ class TestPromotionServer(TestCase):
         response = self.client.put(
             f"{BASE_URL}/{new_promotion['id']}/activate")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        response = self.client.delete(
-            f"{BASE_URL}/{new_promotion['id']}/activate")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # response = self.client.delete(
+        #     f"{BASE_URL}/{new_promotion['id']}/activate")
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
