@@ -228,7 +228,7 @@ class ActivateResource(Resource):
     def put(self, promotion_id):
         """
         Activates a Promotion
-        This endpoint will Activate a Promotion based the id specified in the path
+        This endpoint will Activate a Promotion based on the id specified in the path
         """
         app.logger.info(
             "Request to Activate a promotion with id: %s", promotion_id)
@@ -244,7 +244,23 @@ class ActivateResource(Resource):
     # ------------------------------------------------------------------
     # DEACTIVATE A PROMOTION
     # ------------------------------------------------------------------
-
+    @api.doc('deactivate_promotion')
+    @api.response(404, 'Promotion not found')
+    def delete(self, promotion_id):
+        """
+        Deactivates a Promotion
+        This endpoint will Deactivate a Promotion based on the id specified in the path
+        """
+        app.logger.info(
+            "Request to Deactivate a promotion with id: %s", promotion_id)
+        promotion = Promotion.find(promotion_id)
+        if not promotion:
+            abort(status.HTTP_404_NOT_FOUND,
+                  f"Promotion with id '{promotion_id}' was not found.")
+        promotion.deactivate()
+        app.logger.info(
+            "Promotion with ID [%s] deactivation complete.", promotion_id)
+        return promotion.serialize(), status.HTTP_200_OK
 
 ######################################################################
 #  UTILITY FUNCTIONS
